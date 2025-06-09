@@ -45,7 +45,13 @@ buttons.forEach((button) => {
         numbB.push(clickedButton);
         console.log("Stored in b:", numbB);
       }
-
+    } else if (id === "operatorC"){
+      numbA = []
+      numbB = []
+      operator = null;
+      clickedButton = null;
+      console.log("Cleared all values.");
+     
     } else if (id === "operator=") {
       const a = parseInt(numbA.join(""), 10);
       const b = parseInt(numbB.join(""), 10);
@@ -65,17 +71,23 @@ buttons.forEach((button) => {
           result = devide(a, b);
           break;
         default:
-          result = "Unknown operator";
+          console.log("Error: Unknown or missing operator.");
+          return; 
       }
 
       console.log("Result:", result);
 
       // Reset or store result for next use
+      if (!isNaN(result)) {
       numbA = [parseInt(result)];
       numbB = [];
       operator = null;
-
+      }
     } else if (id.startsWith("operator")) {
+      if (numbA.length === 0) {
+        console.log("Select a number first before choosing an operator.");
+        return;
+      }
       operator = id.replace("operator", "");
       console.log("Operator selected:", operator);
     } else {
