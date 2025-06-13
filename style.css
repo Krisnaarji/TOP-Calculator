@@ -1,10 +1,106 @@
-#calculatorContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-#calculatorOperator button {
-    padding :20px;
-    font-size: 20px;
+body {
+  background-color: #1e1e1e;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+#calculatorContainer {
+  background-color: #2b2b2b;
+  border-radius: 12px;
+  padding: 20px;
+  width: 300px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  
+}
+
+#calculatorDisplay {
+  background-color: #1a1a1a;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+#calculatorDisplay h2,
+#calculatorDisplay h3 {
+  font-weight: normal;
+  color: #fff;
+  word-break: break-all;
+}
+
+#calculatorButtons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+}
+
+#calculatorNumbers,
+#calculatorOperator {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+button {
+  flex: 1 1 60px;
+  height: 60px;
+  background-color: #3a3a3a;
+  color: white;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #505050;
+}
+
+#operator\= {
+  background-color: #2e89ff;
+  color: white;
+}
+
+#operator\=:hover {
+  background-color: #1c6ed5;
+}
+
+
+#operatorC {
+  background-color: #ff4b4b;
+}
+
+#operatorC:hover {
+  background-color: #d63d3d;
+}
+
+#expressionDisplay {
+    display: flex;
+    flex-direction: row;
 }
