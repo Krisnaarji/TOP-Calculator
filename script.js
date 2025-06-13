@@ -45,6 +45,14 @@ let clickedButton = null;
 let calculationDone = false;
 
 const calculatorDisplay = document.getElementById("calculatorDisplay");
+const expression = document.createElement("div");
+expression.id = "expressionDisplay";
+const result = document.createElement("div");
+result.id = "resultDisplay";
+calculatorDisplay.appendChild(expression);
+calculatorDisplay.appendChild(result);
+
+
 const displayInput = document.createElement("h2");
 const firstInput = document.createElement("h3");
 const operatorInput = document.createElement("h3");
@@ -63,18 +71,26 @@ function performCalculation() {
 
     let result = operate(operator, a, b);
 
+    if (typeof result === 'number' && !isNaN(result)) {
+        result = parseFloat(result.toFixed(3));
+    }
+
     displayInput.textContent = result;
     console.log("Calculation Result:", result);
 
     if (typeof result === 'number' && !isNaN(result)) {
-        numbA = [result];
+        // Allow chaining by keeping result in numbA
+        numbA = result.toString().split('');
         numbB = [];
         operator = null;
+        calculationDone = true;
+
         return result;
     } else if (result === "Error: Division by zero") {
         numbA = [];
         numbB = [];
         operator = null;
+        calculationDone = false;
         firstInput.textContent = '';
         operatorInput.textContent = '';
         secondInput.textContent = '';
@@ -100,7 +116,7 @@ buttons.forEach((button) => {
                 operator = null;
                 calculationDone = false;
 
-                firstInput.textContent = 'First Number: ' + numbA.join('');
+                firstInput.textContent = numbA.join('');
                 operatorInput.textContent = '';
                 secondInput.textContent = '';
                 equals.textContent = '';
@@ -108,11 +124,11 @@ buttons.forEach((button) => {
                 displayInput.textContent = numbA.join('');
             } else if (operator === null) {
                 numbA.push(clickedButton);
-                firstInput.textContent = 'First Number: ' + numbA.join('');
+                firstInput.textContent = numbA.join('');
                 displayInput.textContent = numbA.join('');
             } else {
                 numbB.push(clickedButton);
-                secondInput.textContent = 'Second Number: ' + numbB.join('');
+                secondInput.textContent = numbB.join('');
                 displayInput.textContent = numbB.join('');
             }
             console.log("Stored in a:", numbA, "Stored in b:", numbB);
@@ -129,6 +145,58 @@ buttons.forEach((button) => {
             equals.textContent = '';
             displayInput.textContent = '';
             console.log("Cleared all values.");
+        } else if (id === "operator.") {
+            if (calculationDone) {
+                numbA = ["0", "."];
+                numbB = [];
+                operator = null;
+                calculationDone = false;
+
+                firstInput.textContent = numbA.join('');
+                displayInput.textContent = numbA.join('');
+                return;
+            }
+            if (operator === null) {
+                if (!numbA.includes(".")) {
+                    if (numbA.length === 0) numbA.push("0");
+                    numbA.push(".");
+                    firstInput.textContent = numbA.join('');
+                    displayInput.textContent = numbA.join('');
+                }
+            } else {
+                if (!numbB.includes(".")) {
+                    if (numbB.length === 0) numbB.push("0");
+                    numbB.push(".");
+                    secondInput.textContent = numbB.join('');
+                    displayInput.textContent = numbB.join('');
+                }
+            }
+            return;
+        } else if (id === "operatorErase") {
+            if (calculationDone) {
+                numbA = [];
+                numbB = [];
+                operator = null;
+                calculationDone = false;
+                firstInput.textContent = '';
+                operatorInput.textContent = '';
+                secondInput.textContent = '';
+                equals.textContent = '';
+                inputResult.textContent = '';
+                displayInput.textContent = '';
+                return;
+            }
+
+            if (operator === null && numbA.length > 0) {
+                numbA.pop();
+                firstInput.textContent = numbA.join('');
+                displayInput.textContent = numbA.join('');
+            } else if (operator !== null && numbB.length > 0) {
+                numbB.pop();
+                secondInput.textContent = numbB.join('');
+                displayInput.textContent = numbB.join('');
+            }
+            return;
         } else if (id.startsWith("operator") && id !== "operator=") {
             if (numbA.length === 0) {
                 console.log("Select a number first before choosing an operator.");
@@ -138,16 +206,17 @@ buttons.forEach((button) => {
             if (numbA.length > 0 && operator !== null && numbB.length > 0) {
                 const intermediateResult = performCalculation();
 
-                if (intermediateResult !== null && typeof intermediateResult === 'number' && !isNaN(intermediateResult)) {
-                    firstInput.textContent = 'First Number: ' + numbA[0];
-                    secondInput.textContent = '';
-                    equals.textContent = '';
-                    inputResult.textContent = '';
+                if (typeof intermediateResult === 'number' && !isNaN(intermediateResult)) {
+                    operator = id.replace("operator", "");
+                    operatorInput.textContent = operator;
+                    displayInput.textContent = operator;
+                    calculationDone = false;
+                    return;
                 } else if (typeof intermediateResult === 'string' && intermediateResult.startsWith("Error")) {
                     return;
                 }
             } else if (calculationDone) {
-                firstInput.textContent = 'First Number: ' + numbA[0];
+                firstInput.textContent = numbA.join('');
                 secondInput.textContent = '';
                 equals.textContent = '';
                 inputResult.textContent = '';
@@ -155,7 +224,7 @@ buttons.forEach((button) => {
             }
 
             operator = id.replace("operator", "");
-            operatorInput.textContent = 'Operator: ' + operator;
+            operatorInput.textContent = operator;
             displayInput.textContent = operator;
             console.log("Operator selected:", operator);
         } else if (id === "operator=") {
@@ -167,16 +236,15 @@ buttons.forEach((button) => {
             performCalculation();
 
             equals.textContent = "=";
-            inputResult.textContent = '';
         } else {
             console.log("Other button clicked:", id);
         }
     });
 
-    calculatorDisplay.appendChild(firstInput);
-    calculatorDisplay.appendChild(operatorInput);
-    calculatorDisplay.appendChild(secondInput);
-    calculatorDisplay.appendChild(equals);
-    calculatorDisplay.appendChild(inputResult);
-    calculatorDisplay.appendChild(displayInput);
+    expression.appendChild(firstInput);
+    expression.appendChild(operatorInput);
+    expression.appendChild(secondInput);
+    expression.appendChild(equals);
+    expression.appendChild(inputResult);
+    result.appendChild(displayInput);
 });
